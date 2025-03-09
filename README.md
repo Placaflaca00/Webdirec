@@ -2,8 +2,6 @@
 
 Una aplicación web simple para guardar tus lugares favoritos con imágenes representativas y acceso rápido a navegación.
 
-![Banner de la aplicación](https://via.placeholder.com/800x400?text=Mis+Direcciones+Guardadas)
-
 ## 📋 Descripción
 
 Esta aplicación te permite guardar direcciones importantes (como tu casa, trabajo, restaurantes favoritos, etc.) como tarjetas visuales con imágenes representativas de cada lugar. Cada tarjeta incluye un botón para abrir directamente Google Maps y obtener indicaciones desde tu ubicación actual hasta el destino.
