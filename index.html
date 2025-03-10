@@ -365,6 +365,11 @@
             <div id="weather-temp" class="weather-temp">--°C</div>
             <div id="weather-icon" class="weather-icon"><i class="fas fa-cloud"></i></div>
             <div id="weather-desc" class="weather-desc">Cargando...</div>
+            <p style="margin-top: 10px; font-size: 12px;">
+                <a href="https://openweathermap.org/city/5128581" target="_blank" style="color: white;">
+                    Ver en OpenWeatherMap
+                </a>
+            </p>
         </div>
     </header>
     
@@ -562,12 +567,24 @@
         // Obtener datos del clima para Nueva York
         function getWeatherData() {
             const apiKey = '96a3abb26a969f8c81c4a466c5eedefa';
-            const city = 'New York';
-            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            // Usamos directamente el ID de la ciudad de Nueva York para mayor precisión
+            const cityId = '5128581'; // ID de Nueva York
+            const url = `https://api.openweathermap.org/data/2.5/weather?id=${cityId}&appid=${apiKey}&units=metric&lang=es`;
+            
+            // Mostrar estado de carga
+            weatherTemp.textContent = '--°C';
+            weatherDesc.textContent = 'Cargando...';
             
             fetch(url)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
+                    console.log("Datos del clima recibidos:", data); // Depuración
+                    
                     // Actualizar widget con datos del clima
                     weatherTemp.textContent = `${Math.round(data.main.temp)}°C`;
                     weatherDesc.textContent = data.weather[0].description;
@@ -594,11 +611,26 @@
                     }
                     
                     weatherIcon.innerHTML = `<i class="fas ${iconClass}"></i>`;
+                    
+                    // Añadir información adicional
+                    const tempMin = Math.round(data.main.temp_min);
+                    const tempMax = Math.round(data.main.temp_max);
+                    
+                    // Añadir al widget
+                    weatherDesc.textContent = `${data.weather[0].description} (${tempMin}°C - ${tempMax}°C)`;
                 })
                 .catch(error => {
                     console.error('Error fetching weather data:', error);
                     weatherTemp.textContent = 'N/A';
                     weatherDesc.textContent = 'Error al cargar datos';
+                    // Enlace alternativo al sitio de OpenWeatherMap
+                    weatherWidget.innerHTML += `
+                        <p style="margin-top: 10px; font-size: 12px;">
+                            <a href="https://openweathermap.org/city/5128581" target="_blank" style="color: white;">
+                                Ver en OpenWeatherMap
+                            </a>
+                        </p>
+                    `;
                 });
         }
         
