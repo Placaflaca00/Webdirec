@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Direcciones Guardadas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             box-sizing: border-box;
@@ -26,6 +27,16 @@
             border-radius: 10px;
             margin-bottom: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .header-main {
+            flex: 1;
+            min-width: 300px;
         }
         
         h1 {
@@ -39,14 +50,7 @@
             gap: 10px;
         }
         
-        #address-input {
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        
-        #name-input {
+        #address-input, #name-input {
             padding: 12px;
             border: none;
             border-radius: 5px;
@@ -73,6 +77,76 @@
             background-color: #2d8e49;
         }
         
+        /* Weather Widget */
+        .weather-widget {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .weather-widget h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .weather-temp {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        
+        .weather-icon {
+            margin: 10px 0;
+            font-size: 36px;
+        }
+        
+        .weather-desc {
+            font-size: 14px;
+        }
+        
+        /* Tab Navigation */
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tab-nav {
+            display: flex;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-button {
+            flex: 1;
+            padding: 15px;
+            background-color: transparent;
+            color: #333;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .tab-button:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .tab-button.active {
+            background-color: #4285f4;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Locations Tab */
         .saved-locations {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -134,12 +208,107 @@
             width: 100%;
         }
         
+        .restore-button {
+            background-color: #4285f4;
+            width: 100%;
+        }
+        
         .no-locations {
             text-align: center;
             margin-top: 50px;
             color: #666;
         }
         
+        /* Checklist Tab */
+        .checklist-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .checklist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .checklist-title {
+            font-size: 20px;
+            color: #333;
+        }
+        
+        .category-container {
+            margin-bottom: 20px;
+        }
+        
+        .category-header {
+            background-color: #f0f0f0;
+            padding: 10px 15px;
+            border-radius: 5px 5px 0 0;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .checklist-form {
+            display: flex;
+            margin-top: 10px;
+            gap: 10px;
+        }
+        
+        .checklist-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .checklist-items {
+            margin-top: 10px;
+            list-style: none;
+        }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        
+        .checklist-checkbox {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checklist-text {
+            flex: 1;
+            transition: all 0.3s;
+        }
+        
+        .checklist-text.completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+        
+        .checklist-delete {
+            background: none;
+            border: none;
+            color: #ea4335;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0 5px;
+        }
+        
+        /* Loading Spinner */
         .loading {
             display: none;
             text-align: center;
@@ -161,22 +330,41 @@
             100% { transform: rotate(360deg); }
         }
         
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+            }
+            
             .add-form {
                 flex-direction: column;
+            }
+            
+            .checklist-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Mis Direcciones Guardadas</h1>
-        <div class="add-form">
-            <input type="text" id="name-input" placeholder="Nombre del lugar (ej: Mi Casa, Trabajo, etc.)">
-            <input type="text" id="address-input" placeholder="Dirección exacta (ej: Museo Americano de Historia Natural, 200 Central Park W, NY)">
-            <div class="form-buttons">
-                <button id="add-button">Guardar Dirección</button>
+        <div class="header-main">
+            <h1>Mis Direcciones Guardadas</h1>
+            <div class="add-form">
+                <input type="text" id="name-input" placeholder="Nombre del lugar (ej: Mi Casa, Trabajo, etc.)">
+                <input type="text" id="address-input" placeholder="Dirección exacta (ej: Museo Americano de Historia Natural, 200 Central Park W, NY)">
+                <div class="form-buttons">
+                    <button id="add-button">Guardar Dirección</button>
+                </div>
             </div>
+        </div>
+        
+        <div class="weather-widget" id="weather-widget">
+            <h2>Clima en Nueva York</h2>
+            <div id="weather-temp" class="weather-temp">--°C</div>
+            <div id="weather-icon" class="weather-icon"><i class="fas fa-cloud"></i></div>
+            <div id="weather-desc" class="weather-desc">Cargando...</div>
         </div>
     </header>
     
@@ -185,12 +373,85 @@
         <p>Guardando dirección...</p>
     </div>
     
-    <div id="locations-container" class="saved-locations">
-        <!-- Aquí se mostrarán las tarjetas de ubicaciones -->
+    <div class="tab-container">
+        <div class="tab-nav">
+            <button class="tab-button active" data-tab="locations">Mis Direcciones</button>
+            <button class="tab-button" data-tab="checklist">Lista de Verificación</button>
+            <button class="tab-button" data-tab="trash">Papelera</button>
+        </div>
     </div>
     
-    <div class="no-locations" id="no-locations" style="display: none;">
-        <p>No hay direcciones guardadas. Agrega tu primera dirección arriba.</p>
+    <!-- Tab: Locations -->
+    <div id="locations-tab" class="tab-content active">
+        <div id="locations-container" class="saved-locations">
+            <!-- Aquí se mostrarán las tarjetas de ubicaciones -->
+        </div>
+        
+        <div class="no-locations" id="no-locations" style="display: none;">
+            <p>No hay direcciones guardadas. Agrega tu primera dirección arriba.</p>
+        </div>
+    </div>
+    
+    <!-- Tab: Checklist -->
+    <div id="checklist-tab" class="tab-content">
+        <div class="checklist-container">
+            <div class="checklist-header">
+                <h2 class="checklist-title">Mi Lista para el Viaje</h2>
+            </div>
+            
+            <!-- Comida -->
+            <div class="category-container">
+                <div class="category-header">
+                    <span>🍽️ Comida</span>
+                </div>
+                <div class="checklist-form" data-category="food">
+                    <input type="text" class="checklist-input" placeholder="Añadir restaurante o comida...">
+                    <button class="add-item-button">Añadir</button>
+                </div>
+                <ul class="checklist-items" id="food-items">
+                    <!-- Items de comida -->
+                </ul>
+            </div>
+            
+            <!-- Compras -->
+            <div class="category-container">
+                <div class="category-header">
+                    <span>🛍️ Compras</span>
+                </div>
+                <div class="checklist-form" data-category="shopping">
+                    <input type="text" class="checklist-input" placeholder="Añadir tienda o producto...">
+                    <button class="add-item-button">Añadir</button>
+                </div>
+                <ul class="checklist-items" id="shopping-items">
+                    <!-- Items de compras -->
+                </ul>
+            </div>
+            
+            <!-- Actividades -->
+            <div class="category-container">
+                <div class="category-header">
+                    <span>🎭 Actividades</span>
+                </div>
+                <div class="checklist-form" data-category="activities">
+                    <input type="text" class="checklist-input" placeholder="Añadir actividad...">
+                    <button class="add-item-button">Añadir</button>
+                </div>
+                <ul class="checklist-items" id="activities-items">
+                    <!-- Items de actividades -->
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tab: Trash -->
+    <div id="trash-tab" class="tab-content">
+        <div id="trash-container" class="saved-locations">
+            <!-- Aquí se mostrarán las tarjetas de ubicaciones eliminadas -->
+        </div>
+        
+        <div class="no-locations" id="no-trash" style="display: none;">
+            <p>No hay direcciones en la papelera.</p>
+        </div>
     </div>
     
     <script>
@@ -199,16 +460,36 @@
         const addressInput = document.getElementById('address-input');
         const addButton = document.getElementById('add-button');
         const locationsContainer = document.getElementById('locations-container');
+        const trashContainer = document.getElementById('trash-container');
         const noLocationsMessage = document.getElementById('no-locations');
+        const noTrashMessage = document.getElementById('no-trash');
         const loadingIndicator = document.getElementById('loading');
+        const weatherWidget = document.getElementById('weather-widget');
+        const weatherTemp = document.getElementById('weather-temp');
+        const weatherIcon = document.getElementById('weather-icon');
+        const weatherDesc = document.getElementById('weather-desc');
         
-        // Array para almacenar las ubicaciones guardadas
+        // Arrays para almacenar datos
         let savedLocations = JSON.parse(localStorage.getItem('savedLocations')) || [];
+        let trashLocations = JSON.parse(localStorage.getItem('trashLocations')) || [];
+        let checklistItems = JSON.parse(localStorage.getItem('checklistItems')) || {
+            food: [],
+            shopping: [],
+            activities: []
+        };
         
         // Inicializar la aplicación
         function init() {
             // Renderizar las ubicaciones guardadas
             renderSavedLocations();
+            renderTrashLocations();
+            renderChecklistItems();
+            
+            // Obtener datos del clima
+            getWeatherData();
+            
+            // Configurar navegación por pestañas
+            setupTabs();
             
             // Evento para agregar una nueva ubicación
             addButton.addEventListener('click', addLocation);
@@ -225,6 +506,100 @@
                     addLocation();
                 }
             });
+            
+            // Configurar eventos para la lista de verificación
+            setupChecklistEvents();
+        }
+        
+        // Configurar navegación por pestañas
+        function setupTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    // Desactivar todas las pestañas
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // Activar pestaña seleccionada
+                    button.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+        }
+        
+        // Configurar eventos para la lista de verificación
+        function setupChecklistEvents() {
+            // Añadir items a las categorías
+            document.querySelectorAll('.add-item-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const form = this.parentElement;
+                    const input = form.querySelector('.checklist-input');
+                    const category = form.getAttribute('data-category');
+                    
+                    addChecklistItem(category, input.value);
+                    input.value = '';
+                });
+            });
+            
+            // Permitir añadir con Enter
+            document.querySelectorAll('.checklist-input').forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        const form = this.parentElement;
+                        const category = form.getAttribute('data-category');
+                        
+                        addChecklistItem(category, this.value);
+                        this.value = '';
+                    }
+                });
+            });
+        }
+        
+        // Obtener datos del clima para Nueva York
+        function getWeatherData() {
+            const apiKey = '96a3abb26a969f8c81c4a466c5eedefa';
+            const city = 'New York';
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    // Actualizar widget con datos del clima
+                    weatherTemp.textContent = `${Math.round(data.main.temp)}°C`;
+                    weatherDesc.textContent = data.weather[0].description;
+                    
+                    // Configurar icono según el clima
+                    const weatherCode = data.weather[0].icon;
+                    let iconClass = 'fa-cloud';
+                    
+                    // Mapear códigos de clima a iconos de Font Awesome
+                    if (weatherCode.includes('01')) {
+                        iconClass = 'fa-sun'; // Despejado
+                    } else if (weatherCode.includes('02')) {
+                        iconClass = 'fa-cloud-sun'; // Parcialmente nublado
+                    } else if (weatherCode.includes('03') || weatherCode.includes('04')) {
+                        iconClass = 'fa-cloud'; // Nublado
+                    } else if (weatherCode.includes('09') || weatherCode.includes('10')) {
+                        iconClass = 'fa-cloud-rain'; // Lluvia
+                    } else if (weatherCode.includes('11')) {
+                        iconClass = 'fa-bolt'; // Tormenta
+                    } else if (weatherCode.includes('13')) {
+                        iconClass = 'fa-snowflake'; // Nieve
+                    } else if (weatherCode.includes('50')) {
+                        iconClass = 'fa-smog'; // Niebla
+                    }
+                    
+                    weatherIcon.innerHTML = `<i class="fas ${iconClass}"></i>`;
+                })
+                .catch(error => {
+                    console.error('Error fetching weather data:', error);
+                    weatherTemp.textContent = 'N/A';
+                    weatherDesc.textContent = 'Error al cargar datos';
+                });
         }
         
         // Agregar una nueva ubicación
@@ -365,7 +740,7 @@
                         <p class="location-address">${location.address}</p>
                         <button class="directions-button" data-address="${location.address}">Ver ruta en Google Maps</button>
                         <div class="card-actions">
-                            <button class="delete-button" data-id="${location.id}">Eliminar</button>
+                            <button class="delete-button" data-id="${location.id}">Mover a papelera</button>
                         </div>
                     </div>
                 `;
@@ -385,9 +760,118 @@
             document.querySelectorAll('.delete-button').forEach(button => {
                 button.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
-                    deleteLocation(id);
+                    moveToTrash(id);
                 });
             });
+        }
+        
+        // Renderizar las ubicaciones en la papelera
+        function renderTrashLocations() {
+            // Limpiar el contenedor
+            trashContainer.innerHTML = '';
+            
+            // Mostrar mensaje si no hay ubicaciones
+            if (trashLocations.length === 0) {
+                noTrashMessage.style.display = 'block';
+                return;
+            } else {
+                noTrashMessage.style.display = 'none';
+            }
+            
+            // Renderizar cada ubicación
+            trashLocations.forEach(location => {
+                const locationCard = document.createElement('div');
+                locationCard.className = 'location-card';
+                locationCard.dataset.id = location.id;
+                
+                locationCard.innerHTML = `
+                    <img class="location-image" src="${location.imageUrl}" alt="${location.name}">
+                    <div class="location-details">
+                        <h2 class="location-name">${location.name}</h2>
+                        <p class="location-address">${location.address}</p>
+                        <div class="card-actions">
+                            <button class="restore-button" data-id="${location.id}">Restaurar</button>
+                            <button class="delete-button" data-id="${location.id}">Eliminar permanentemente</button>
+                        </div>
+                    </div>
+                `;
+                
+                // Agregar al contenedor
+                trashContainer.appendChild(locationCard);
+            });
+            
+            // Añadir event listeners a los botones de las tarjetas
+            document.querySelectorAll('.restore-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    restoreFromTrash(id);
+                });
+            });
+            
+            document.querySelectorAll('#trash-tab .delete-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    if (confirm('¿Estás seguro de que quieres eliminar permanentemente esta dirección?')) {
+                        deleteLocation(id);
+                    }
+                });
+            });
+        }
+        
+        // Mover ubicación a la papelera
+        function moveToTrash(id) {
+            // Encontrar la ubicación
+            const locationIndex = savedLocations.findIndex(location => location.id === id);
+            
+            if (locationIndex !== -1) {
+                // Mover a la papelera
+                trashLocations.push(savedLocations[locationIndex]);
+                
+                // Eliminar de las ubicaciones guardadas
+                savedLocations.splice(locationIndex, 1);
+                
+                // Guardar en localStorage
+                localStorage.setItem('savedLocations', JSON.stringify(savedLocations));
+                localStorage.setItem('trashLocations', JSON.stringify(trashLocations));
+                
+                // Actualizar la visualización
+                renderSavedLocations();
+                renderTrashLocations();
+            }
+        }
+        
+        // Restaurar ubicación desde la papelera
+        function restoreFromTrash(id) {
+            // Encontrar la ubicación
+            const locationIndex = trashLocations.findIndex(location => location.id === id);
+            
+            if (locationIndex !== -1) {
+                // Mover a las ubicaciones guardadas
+                savedLocations.push(trashLocations[locationIndex]);
+                
+                // Eliminar de la papelera
+                trashLocations.splice(locationIndex, 1);
+                
+                // Guardar en localStorage
+                localStorage.setItem('savedLocations', JSON.stringify(savedLocations));
+                localStorage.setItem('trashLocations', JSON.stringify(trashLocations));
+                
+                // Actualizar la visualización
+                renderSavedLocations();
+                renderTrashLocations();
+            }
+        }
+        
+        // Eliminar una ubicación permanentemente
+        function deleteLocation(id) {
+            // Eliminar de la papelera
+            trashLocations = trashLocations.filter(location => location.id !== id);
+            
+            // Guardar en localStorage
+            localStorage.setItem('trashLocations', JSON.stringify(trashLocations));
+            
+            // Actualizar la visualización
+            renderTrashLocations();
         }
         
         // Obtener direcciones en Google Maps
@@ -402,18 +886,90 @@
             window.open(mapsUrl, '_blank');
         }
         
-        // Eliminar una ubicación
-        function deleteLocation(id) {
-            if (confirm('¿Estás seguro de que quieres eliminar esta dirección?')) {
-                // Filtrar la ubicación a eliminar
-                savedLocations = savedLocations.filter(location => location.id !== id);
+        // Añadir un nuevo item a la lista de verificación
+        function addChecklistItem(category, text) {
+            text = text.trim();
+            
+            if (!text) return;
+            
+            // Añadir a la categoría correspondiente
+            checklistItems[category].push({
+                id: Date.now().toString(),
+                text: text,
+                completed: false
+            });
+            
+            // Guardar en localStorage
+            localStorage.setItem('checklistItems', JSON.stringify(checklistItems));
+            
+            // Actualizar la visualización
+            renderChecklistItems();
+        }
+        
+        // Renderizar items de la lista de verificación
+        function renderChecklistItems() {
+            // Procesar cada categoría
+            for (const category in checklistItems) {
+                const container = document.getElementById(`${category}-items`);
+                container.innerHTML = '';
                 
-                // Guardar en localStorage
-                localStorage.setItem('savedLocations', JSON.stringify(savedLocations));
-                
-                // Actualizar la visualización
-                renderSavedLocations();
+                // Añadir cada item
+                checklistItems[category].forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'checklist-item';
+                    li.dataset.id = item.id;
+                    li.dataset.category = category;
+                    
+                    li.innerHTML = `
+                        <input type="checkbox" class="checklist-checkbox" ${item.completed ? 'checked' : ''}>
+                        <span class="checklist-text ${item.completed ? 'completed' : ''}">${item.text}</span>
+                        <button class="checklist-delete"><i class="fas fa-trash"></i></button>
+                    `;
+                    
+                    container.appendChild(li);
+                });
             }
+            
+            // Añadir event listeners
+            document.querySelectorAll('.checklist-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const item = this.closest('.checklist-item');
+                    const id = item.dataset.id;
+                    const category = item.dataset.category;
+                    const textElement = item.querySelector('.checklist-text');
+                    
+                    // Cambiar estado de completado
+                    const itemIndex = checklistItems[category].findIndex(i => i.id === id);
+                    checklistItems[category][itemIndex].completed = this.checked;
+                    
+                    // Actualizar estilo
+                    if (this.checked) {
+                        textElement.classList.add('completed');
+                    } else {
+                        textElement.classList.remove('completed');
+                    }
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('checklistItems', JSON.stringify(checklistItems));
+                });
+            });
+            
+            document.querySelectorAll('.checklist-delete').forEach(button => {
+                button.addEventListener('click', function() {
+                    const item = this.closest('.checklist-item');
+                    const id = item.dataset.id;
+                    const category = item.dataset.category;
+                    
+                    // Eliminar item
+                    checklistItems[category] = checklistItems[category].filter(i => i.id !== id);
+                    
+                    // Guardar en localStorage
+                    localStorage.setItem('checklistItems', JSON.stringify(checklistItems));
+                    
+                    // Actualizar visualización
+                    renderChecklistItems();
+                });
+            });
         }
         
         // Iniciar la aplicación cuando se cargue el documento
