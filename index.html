@@ -50,7 +50,8 @@
             gap: 10px;
         }
         
-        #address-input, #name-input {
+        #address-input,
+        #name-input {
             padding: 12px;
             border: none;
             border-radius: 5px;
@@ -591,8 +592,12 @@
             getWeatherData();
             setupTabs();
             addButton.addEventListener('click', addLocation);
-            nameInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') addressInput.focus(); });
-            addressInput.addEventListener('keypress', function(e) { if (e.key === 'Enter') addLocation(); });
+            nameInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addressInput.focus();
+            });
+            addressInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addLocation();
+            });
             setupChecklistEvents();
         }
         
@@ -642,7 +647,10 @@
             weatherTemp.textContent = '--°C';
             weatherDesc.textContent = 'Cargando...';
             fetch(url)
-                .then(response => { if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); return response.json(); })
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
                 .then(data => {
                     weatherTemp.textContent = `${Math.round(data.main.temp)}°C`;
                     const weatherCode = data.weather[0].icon;
@@ -676,6 +684,22 @@
         // Renderizar radios para seleccionar destino de guardado (General y días)
         function renderDayRadios() {
             dayRadiosContainer.innerHTML = '';
+            // Siempre primero el radio "General"
+            const generalLabel = document.createElement('label');
+            generalLabel.style.display = 'inline-flex';
+            generalLabel.style.alignItems = 'center';
+            generalLabel.style.gap = '5px';
+            const generalRadio = document.createElement('input');
+            generalRadio.type = 'radio';
+            generalRadio.name = 'save-target';
+            generalRadio.value = 0;
+            generalRadio.checked = true;
+            generalRadio.addEventListener('change', () => { selectedDay = 0; });
+            generalLabel.appendChild(generalRadio);
+            generalLabel.appendChild(document.createTextNode('General'));
+            dayRadiosContainer.appendChild(generalLabel);
+            
+            // Luego los radios para cada día
             days.forEach(day => {
                 const label = document.createElement('label');
                 label.style.display = 'inline-flex';
@@ -690,70 +714,80 @@
                 label.appendChild(document.createTextNode(`Día ${day}`));
                 dayRadiosContainer.appendChild(label);
             });
-            // Aseguramos que General (0) esté seleccionado
-            if (!document.querySelector('input[name="save-target"][value="0"]')) {
-                const generalLabel = document.createElement('label');
-                generalLabel.style.display = 'inline-flex';
-                generalLabel.style.alignItems = 'center';
-                generalLabel.style.gap = '5px';
-                const generalRadio = document.createElement('input');
-                generalRadio.type = 'radio';
-                generalRadio.name = 'save-target';
-                generalRadio.value = 0;
-                generalRadio.checked = true;
-                generalRadio.addEventListener('change', () => { selectedDay = 0; });
-                generalLabel.appendChild(generalRadio);
-                generalLabel.appendChild(document.createTextNode('General'));
-                dayRadiosContainer.prepend(generalLabel);
-            } else {
-                document.querySelector('input[name="save-target"][value="0"]').checked = true;
-                selectedDay = 0;
-            }
         }
         
         // Agregar una nueva ubicación (al día seleccionado)
         function addLocation() {
             const name = nameInput.value.trim();
             const address = addressInput.value.trim();
-            if (!name) { alert('Por favor, ingresa un nombre para la ubicación.'); nameInput.focus(); return; }
-            if (!address) { alert('Por favor, ingresa una dirección exacta.'); addressInput.focus(); return; }
+            if (!name) {
+                alert('Por favor, ingresa un nombre para la ubicación.');
+                nameInput.focus();
+                return;
+            }
+            if (!address) {
+                alert('Por favor, ingresa una dirección exacta.');
+                addressInput.focus();
+                return;
+            }
             loadingIndicator.style.display = 'block';
             const searchTerms = getSearchTermsFromAddress(address);
             const unsplashApiKey = 'UuKNQXen6EYvY6xyEoFxY2rorUG08_EoWCDpx1ydme0';
             fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerms)}&client_id=${unsplashApiKey}`)
-              .then(response => response.json())
-              .then(data => {
-                let imageUrl = 'https://via.placeholder.com/400x300?text=No+Image+Found';
-                if (data.results && data.results.length > 0) imageUrl = data.results[0].urls.regular;
-                const newLocation = { id: Date.now().toString(), name: name, address: address, imageUrl: imageUrl, day: selectedDay };
-                savedLocations.push(newLocation);
-                saveAll();
-                nameInput.value = '';
-                addressInput.value = '';
-                nameInput.focus();
-                renderLocations();
-                loadingIndicator.style.display = 'none';
-              })
-              .catch(error => {
-                console.error('Error fetching image:', error);
-                const newLocation = { id: Date.now().toString(), name: name, address: address, imageUrl: 'https://via.placeholder.com/400x300?text=Error+Loading+Image', day: selectedDay };
-                savedLocations.push(newLocation);
-                saveAll();
-                nameInput.value = '';
-                addressInput.value = '';
-                nameInput.focus();
-                renderLocations();
-                loadingIndicator.style.display = 'none';
-              });
+                .then(response => response.json())
+                .then(data => {
+                    let imageUrl = 'https://via.placeholder.com/400x300?text=No+Image+Found';
+                    if (data.results && data.results.length > 0) {
+                        imageUrl = data.results[0].urls.regular;
+                    }
+                    const newLocation = {
+                        id: Date.now().toString(),
+                        name: name,
+                        address: address,
+                        imageUrl: imageUrl,
+                        day: selectedDay
+                    };
+                    savedLocations.push(newLocation);
+                    saveAll();
+                    nameInput.value = '';
+                    addressInput.value = '';
+                    nameInput.focus();
+                    renderLocations();
+                    loadingIndicator.style.display = 'none';
+                })
+                .catch(error => {
+                    console.error('Error fetching image:', error);
+                    const newLocation = {
+                        id: Date.now().toString(),
+                        name: name,
+                        address: address,
+                        imageUrl: 'https://via.placeholder.com/400x300?text=Error+Loading+Image',
+                        day: selectedDay
+                    };
+                    savedLocations.push(newLocation);
+                    saveAll();
+                    nameInput.value = '';
+                    addressInput.value = '';
+                    nameInput.focus();
+                    renderLocations();
+                    loadingIndicator.style.display = 'none';
+                });
         }
         
         // Obtener términos de búsqueda relevantes de la dirección
         function getSearchTermsFromAddress(address) {
             const parts = address.split(',');
             const firstPart = parts[0].trim();
-            const keywords = ['museo', 'parque', 'restaurant', 'cafe', 'hotel', 'teatro', 'biblioteca', 'universidad', 'plaza', 'estadio', 'aeropuerto', 'estación', 'centro comercial', 'iglesia', 'catedral', 'monumento'];
+            const keywords = [
+                'museo', 'parque', 'restaurant', 'cafe', 'hotel',
+                'teatro', 'biblioteca', 'universidad', 'plaza',
+                'estadio', 'aeropuerto', 'estación', 'centro comercial',
+                'iglesia', 'catedral', 'monumento'
+            ];
             for (const keyword of keywords) {
-                if (firstPart.toLowerCase().includes(keyword)) return keyword;
+                if (firstPart.toLowerCase().includes(keyword)) {
+                    return keyword;
+                }
             }
             return firstPart;
         }
@@ -771,7 +805,11 @@
             // Renderizar sección General
             generalContainer.innerHTML = '';
             const generalLocations = savedLocations.filter(loc => loc.day === 0);
-            if (generalLocations.length === 0) noGeneralMessage.style.display = 'block'; else noGeneralMessage.style.display = 'none';
+            if (generalLocations.length === 0) {
+                noGeneralMessage.style.display = 'block';
+            } else {
+                noGeneralMessage.style.display = 'none';
+            }
             generalLocations.forEach(location => {
                 const locationCard = document.createElement('div');
                 locationCard.className = 'location-card';
@@ -997,7 +1035,8 @@
                 button.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
                     if (confirm('¿Estás seguro de que quieres eliminar permanentemente esta dirección?')) {
-                        deleteLocation(id);\	n                    }
+                        deleteLocation(id);
+                    }
                 });
             });
         }
@@ -1037,7 +1076,8 @@
                     const textElement = item.querySelector('.checklist-text');
                     const itemIndex = checklistItems[category].findIndex(i => i.id === id);
                     checklistItems[category][itemIndex].completed = this.checked;
-                    if (this.checked) textElement.classList.add('completed'); else textElement.classList.remove('completed');
+                    if (this.checked) textElement.classList.add('completed');
+                    else textElement.classList.remove('completed');
                     saveAll();
                 });
             });
