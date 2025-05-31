@@ -691,8 +691,24 @@
                 dayRadiosContainer.appendChild(label);
             });
             // Aseguramos que General (0) esté seleccionado
-            document.querySelector('input[name="save-target"][value="0"]').checked = true;
-            selectedDay = 0;
+            if (!document.querySelector('input[name="save-target"][value="0"]')) {
+                const generalLabel = document.createElement('label');
+                generalLabel.style.display = 'inline-flex';
+                generalLabel.style.alignItems = 'center';
+                generalLabel.style.gap = '5px';
+                const generalRadio = document.createElement('input');
+                generalRadio.type = 'radio';
+                generalRadio.name = 'save-target';
+                generalRadio.value = 0;
+                generalRadio.checked = true;
+                generalRadio.addEventListener('change', () => { selectedDay = 0; });
+                generalLabel.appendChild(generalRadio);
+                generalLabel.appendChild(document.createTextNode('General'));
+                dayRadiosContainer.prepend(generalLabel);
+            } else {
+                document.querySelector('input[name="save-target"][value="0"]').checked = true;
+                selectedDay = 0;
+            }
         }
         
         // Agregar una nueva ubicación (al día seleccionado)
@@ -816,12 +832,18 @@
                 label.appendChild(document.createTextNode(`Día ${day}`));
                 dayHeader.appendChild(label);
                 
-                // Botón para borrar este día
+                // Botón para borrar este día (no permitir borrar si es el único día)
                 const delDayBtn = document.createElement('button');
                 delDayBtn.className = 'delete-day-button';
                 delDayBtn.title = 'Borrar Día';
                 delDayBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                delDayBtn.addEventListener('click', function() { deleteDay(day); });
+                delDayBtn.addEventListener('click', function() { 
+                    if (days.length === 1) {
+                        alert('No puedes eliminar el único Día.');
+                        return;
+                    }
+                    deleteDay(day);
+                });
                 dayHeader.appendChild(delDayBtn);
                 
                 // Si es último día, agregar botón + para crear un día nuevo
@@ -975,8 +997,7 @@
                 button.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
                     if (confirm('¿Estás seguro de que quieres eliminar permanentemente esta dirección?')) {
-                        deleteLocation(id);
-                    }
+                        deleteLocation(id);\	n                    }
                 });
             });
         }
